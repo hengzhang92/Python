@@ -1,0 +1,7 @@
+investment/.idea
+MachinelearningClass/.idea
+test/.idea
+*.csv
+*.zip
+*.pkl
+investment/bitcoin-historical-data.zip

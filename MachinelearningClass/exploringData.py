@@ -24,3 +24,6 @@ sns.heatmap(titanic_data_corr,annot=True)
 
 label_encoding=preprocessing.LabelEncoder()
 titanic_df['Sex']=label_encoding.fit_transform(titanic_df['Sex'])
+titanic_df=pd.get_dummies(titanic_df,columns=['Embarked'])
+titanic_df=titanic_df.sample(frac=1).reset_index(drop=True)
+titanic_df.to_csv('titanic/titanic_processed.csv',index=False)

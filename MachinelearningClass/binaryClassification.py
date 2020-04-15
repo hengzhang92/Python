@@ -43,12 +43,16 @@ def build_model(classifier_fn,name_of_y_col,names_of_x_cols,dataset,test_frac=0.
             'test': test_summary,
             'confusion_matrix': model_crosstab}
 
-def compare_results(result_dict):
+def compare_results():
     for key in result_dict:
-        print('Clasification:')
+        print('Clasification:' + key)
         print()
         print('Training data')
         for score in result_dict[key]['training']:
+            print(score,result_dict[key]['training'][score])
+        print()
+        print('Test data')
+        for score in result_dict[key]['test']:
             print(score,result_dict[key]['test'][score])
         print()
 
@@ -57,5 +61,29 @@ def logistic_fun(x_train,y_train):
     model = LogisticRegression(solver = 'liblinear')
     model.fit(x_train,y_train)
     return model
-result_dict['survived - logistic'] = build_model(logistic_fun,'Survived',Features,titanic_df)
-compare_results(result_dict)
+
+def linear_discriminant_fn(x_train,y_train,solver='svd'):
+    model= LinearDiscriminantAnalysis(solver=solver)
+    model.fit(x_train,y_train)
+    return model
+
+def quadratic_discriminant_fn(x_train,y_train):
+    model = QuadraticDiscriminantAnalysis()
+    model.fit(x_train,y_train)
+    return model
+
+def sgd_fn(x_train,y_train,max_iter=1000,tol=1e-3)
+    model=SGDClassifier(max_iter=max_iter,tol=tol)
+    model.fit(x_train,y_train)
+    return model
+
+def linear_svc_fn(x_train,y_train,C=1.0,max_iter=1000,tol=1e-3):
+    model = LinearSVC(C=C,max_iter=max_iter,tol=tol,dual=False)
+    model.fit(x_train,y_train)
+    return model
+
+result_dict['survived - logistic'] = build_model(logistic_fun,'Survived',Features[0:-1],titanic_df)
+result_dict['linear_discriminant_analysis'] = build_model(linear_discriminant_fn,'Survived',Features[0:-1],titanic_df)
+result_dict['survived - quadratic_discriminant_analysis']=build_model(quadratic_discriminant_fn,'Survived',Features[0:-1],titanic_df)
+result_dict['survived-linearsvc'] = build_model(linear_svc_fn,'Survived',Features[0:-1],titanic_df)
+compare_results()

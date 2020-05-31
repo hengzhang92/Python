@@ -2,20 +2,16 @@ import glob
 import pandas as pd
 import matplotlib
 import datetime
-matplotlib.use('TkAgg')
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-def price_analysis(Data_raw,frequency,buy_tresh,sell_tresh,buysellratio,selection='open',debug=0):
+def price_analysis(Euro,coin,sellprice,Data_raw,frequency,buy_tresh,sell_tresh,buysellratio,selection='open',debug=0,actualoutput=0):
     trading_cost = 0.001
     Data_resampled = Data_raw.iloc[::frequency, :]
     Data_selected = Data_resampled[['open time', selection]].astype(float)
     Data=Data_selected[selection]
     buy_index = Data.pct_change() > buy_tresh
     sell_index = Data.pct_change() < sell_tresh
-    Euro = 1
-    coin = 0
-    sellprice = 1000000
     tradingtimes = 0
     if sell_tresh>0:
         sell_tresh=-sell_tresh
@@ -40,7 +36,11 @@ def price_analysis(Data_raw,frequency,buy_tresh,sell_tresh,buysellratio,selectio
         plt.plot(Data.index,Data)
         plt.plot(actualbuy,Data[actualbuy],'*b')
         plt.plot(actualsell,Data[actualsell],'or')
-    return total_assets
+    if actualoutput:
+        return Euro,coin
+    else:
+        return total_assets
+
 
 def randomlize(Data_raw,n=1,minimumsize=168):
     # select n number of radomly chosen historical data
@@ -56,9 +56,21 @@ def randomlize(Data_raw,n=1,minimumsize=168):
         ctr=ctr+1
     return Data_selected
 
+def randomlize_fixedsize(Data_raw,datasize,n=1):
+    data_length = Data_raw.shape[0]
+    ctr = 0
+    Data_selected = []
+    while ctr < n:
+        startingpoint = data_length
+        while startingpoint > (Data_raw.index[-1] - datasize):
+            startingpoint = random.choice(Data_raw.index)
+        Data_selected.append(Data_raw[startingpoint:startingpoint + datasize])
+        ctr = ctr + 1
+    return Data_selected
 
 
-def find_tresh(Data,trading_frequencies,buy_treshholds,sell_treshholds,progress=False,getdf=False):
+
+def find_tresh(Data,trading_frequencies,buy_treshholds,sell_treshholds,buy_selltresh,progress=False,getdf=False):
     assets = []
     output=[]
     i=0
@@ -66,10 +78,10 @@ def find_tresh(Data,trading_frequencies,buy_treshholds,sell_treshholds,progress=
     for frequency in trading_frequencies:
         for buy_treshhold in buy_treshholds:
             for sell_treshhold in sell_treshholds:
-                asset = price_analysis(Data, frequency, buy_treshhold, sell_treshhold, 1, selection='open', debug=0)
+                asset = price_analysis(Data, frequency, buy_treshhold, sell_treshhold, buy_selltresh, selection='open', debug=0)
                 assets.append([frequency, buy_treshhold, sell_treshhold, asset])
                 if asset>1:
-                    output.append([frequency,buy_treshhold,sell_treshhold])
+                    output.append([frequency,buy_treshhold,sell_treshhold,asset])
                 i += 1
                 if progress:
                     print(i / totalsize)
@@ -78,6 +90,24 @@ def find_tresh(Data,trading_frequencies,buy_treshholds,sell_treshholds,progress=
         return [output,df]
     else:
         return [output]
+
+def find_maxgain_tresh(Data,trading_frequencies,buy_treshholds,sell_treshholds,buy_selltresh,progress=False):
+    maxasset = 0
+    i = 0
+    totalsize = trading_frequencies.size * buy_treshholds.size * sell_treshholds.size
+    for frequency in trading_frequencies:
+        for buy_treshhold in buy_treshholds:
+            for sell_treshhold in sell_treshholds:
+                asset = price_analysis(Data, frequency, buy_treshhold, sell_treshhold, buy_selltresh, selection='open', debug=0)
+                if asset>maxasset:
+                    maxasset = asset
+                    parameter=[frequency,buy_treshhold,sell_treshhold]
+
+                if progress:
+                    print(i / totalsize)
+                    i=i+1
+    return parameter
+
 
 
 

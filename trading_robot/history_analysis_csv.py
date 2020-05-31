@@ -1,8 +1,7 @@
 from binance.client import Client
 from datetime import datetime
 import pandas as pd
-api_key='pRddFgs1bkAq5xHhwulYPvjwPnmB6Tgb6u7eXnicEhumaXv1Gq5DbuTlFgh7mUnd'
-api_secret='e0HKrWUiBGo35aBQy5ayUU49GjBMpQIydjo23zFqAlm3ycRE7pYEyTOpO7dwNwE4'
+import mykeys.py
 client = Client(api_key, api_secret)
 startdate='1 Dec, 2017'
 enddate='30 Apr, 2020'

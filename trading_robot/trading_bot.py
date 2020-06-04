@@ -1,5 +1,4 @@
 from binance.client import Client
-from datetime import datetime
 import pandas as pd
 import numpy as np
 import mykeys
@@ -7,6 +6,21 @@ import logging
 from scipy import signal
 coins=['BTC','ETH']
 client = Client(mykeys.api_key, mykeys.api_secret)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+
+
+def setup_logger(name, log_file, level=logging.INFO):
+    """To setup as many loggers as you want"""
+
+    handler = logging.FileHandler(log_file)
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(handler)
+
+    return logger
+
 def get_last_price(coin):
     klines = client.get_historical_klines( coin+'USDT', '1h', '1000h ago UTC')
     col = ['open time', 'open', 'high', 'low', 'close', 'volume', 'colsetime', 'qoteAsetVolume', 'ntrade']
@@ -31,7 +45,7 @@ def buyorder(coin):
     symbol=coin+'USDT',
     side=Client.SIDE_BUY,
     type=Client.ORDER_TYPE_MARKET,
-    quantity=cash/len(coins)/avg_price*(1-0.0015))
+    quantity=round(cash/len(coins)/avg_price*(1-0.0015),2))
 
 def get_dic():
     coins=pd.read_csv('trading_frequency.csv',index_col='coins')
@@ -56,6 +70,7 @@ def decision(sig,f,quantity,last_trade_price,buy_selltresh=0.001):
         decision_out='buy'
     else:
         decision_out='NA'
+
     return decision_out
 
 dic=get_dic()
@@ -66,9 +81,12 @@ for coin in coins:
     quantity = float(client.get_asset_balance(asset=coin)['free'])
     last_price, type = get_last_trade('BTC')
     decision_out=decision(sig, f, quantity, last_price, buy_selltresh=0.001)
+    logger = setup_logger(coin, coin + '_decision.log')
+    logger.info('decision = ' +decision_out)
+    print(decision_out)
     if decision_out =='buy':
         buyorder(coin)
-    elif dicision_out == 'sell':
+    elif decision_out == 'sell':
         sellorder(coin)
 
 

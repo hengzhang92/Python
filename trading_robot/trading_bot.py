@@ -83,12 +83,17 @@ for coin in coins:
     last_price, type = get_last_trade('BTC')
     decision_out=decision(sig, f, quantity, last_price, buy_selltresh=0.001)
     logger = setup_logger(coin, coin + '_decision.log')
-    logger.info('decision = ' +decision_out)
+
     print(decision_out)
-    if decision_out =='buy':
-        buyorder(coin)
-    elif decision_out == 'sell':
-        sellorder(coin)
+    try:
+        if decision_out =='buy':
+            buyorder(coin)
+            logger.info('decision = ' + decision_out)
+        elif decision_out == 'sell':
+            sellorder(coin)
+            logger.info('decision = ' + decision_out)
+    except:
+        logger.error('issue with trading')
 
 
 

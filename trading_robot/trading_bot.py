@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import mykeys
 import logging
+import math
 from scipy import signal
 coins=['BTC','ETH']
 client = Client(mykeys.api_key, mykeys.api_secret)
@@ -36,7 +37,7 @@ def sellorder(coin):
     symbol=coin+'USDT',
     side=Client.SIDE_SELL,
     type=Client.ORDER_TYPE_MARKET,
-    quantity=balance['free'])
+    quantity=math.floor(float(balance['free']) * 1000) / 1000)
 
 def buyorder(coin):
     cash= float(client.get_asset_balance('USDT')['free'])

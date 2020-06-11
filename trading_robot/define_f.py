@@ -7,7 +7,7 @@ from frequency_analysis import index_analyzer,buy_sell
 import csv
 
 client = Client(mykeys.api_key, mykeys.api_secret)
-coinlist=['BTC','ETH','XRP']
+coinlist=['BTC','ETH','XRP','BCH']
 col = ['open time', 'open', 'high', 'low', 'close', 'volume', 'colsetime', 'qoteAsetVolume', 'ntrade']
 frequencies=np.linspace(0.01,0.1,20)
 trading_f=[]

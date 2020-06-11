@@ -147,7 +147,7 @@ def main():
 
     # evaluate the trashholdfound for random choice for bitcoin
     assets=[]
-    Data_random=randomlize(sig,n=20,minimumsize=2000)
+    Data_random=randomlize(sig,n=100,minimumsize=2000)
     for data in Data_random:
         sell_index_A, buy_index_A = index_analyzer(data, 1000, 0.015)
         asset, actualbuy_index, actualsell_index = buy_sell(data, buy_index_A, sell_index_A, 0.001, debug=False)

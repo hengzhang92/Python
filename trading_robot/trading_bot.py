@@ -61,7 +61,7 @@ def get_last_trade(coin):
 
 
 
-def decision(sig,f,quantity,last_trade_price):
+def decision(sig,f,quantity):
     numerator_coeffs, denominator_coeffs = signal.butter(2, f)
     filtered = signal.lfilter(numerator_coeffs, denominator_coeffs, sig)
 
@@ -80,8 +80,7 @@ for coin in coins:
     f=dic[coin]
     cash = float(client.get_asset_balance(asset='USDT')['free'])
     quantity = float(client.get_asset_balance(asset=coin)['free'])
-    last_price, type = get_last_trade(coin)
-    decision_out=decision(sig, f, quantity, last_price)
+    decision_out=decision(sig, f, quantity)
     logger = setup_logger(coin, coin + '_decision.log')
 
     print(decision_out)

@@ -5,7 +5,7 @@ import mykeys
 import logging
 import math
 from scipy import signal
-coins=['BTC','ETH']
+coins=['BTC','ETH','BNB']
 client = Client(mykeys.api_key, mykeys.api_secret)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
@@ -61,13 +61,13 @@ def get_last_trade(coin):
 
 
 
-def decision(sig,f,quantity,last_trade_price,buy_selltresh=0.001):
+def decision(sig,f,quantity,last_trade_price):
     numerator_coeffs, denominator_coeffs = signal.butter(2, f)
     filtered = signal.lfilter(numerator_coeffs, denominator_coeffs, sig)
 
-    if (filtered[-2] > filtered[-1]) and (filtered[-2] > filtered[-3]) and quantity>0.01 and abs(filtered[-1]-last_trade_price)/last_trade_price>buy_selltresh:
+    if (filtered[-2] > filtered[-1]) and (filtered[-2] > filtered[-3]) and quantity>0.01:
         decision_out='sell'
-    elif (filtered[-2] < filtered[-1]) and (filtered[-2] < filtered[-3]) and quantity<0.01 and abs(filtered[-1]-last_trade_price)/last_trade_price>buy_selltresh:
+    elif (filtered[-2] < filtered[-1]) and (filtered[-2] < filtered[-3]) and quantity<0.01:
         decision_out='buy'
     else:
         decision_out='NA'
@@ -80,8 +80,8 @@ for coin in coins:
     f=dic[coin]
     cash = float(client.get_asset_balance(asset='USDT')['free'])
     quantity = float(client.get_asset_balance(asset=coin)['free'])
-    last_price, type = get_last_trade('BTC')
-    decision_out=decision(sig, f, quantity, last_price, buy_selltresh=0.001)
+    last_price, type = get_last_trade(coin)
+    decision_out=decision(sig, f, quantity, last_price)
     logger = setup_logger(coin, coin + '_decision.log')
 
     print(decision_out)

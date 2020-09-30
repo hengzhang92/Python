@@ -46,7 +46,7 @@ def buyorder(coin):
     symbol=coin+'USDT',
     side=Client.SIDE_BUY,
     type=Client.ORDER_TYPE_MARKET,
-    quantity=round(cash/len(coins)/avg_price*(1-0.0015),2))
+    quantity=round(cash/2/avg_price*(1-0.0015),2))
 
 def get_dic():
     coins=pd.read_csv('trading_frequency.csv',index_col='coins')

@@ -38,3 +38,12 @@
 2020-09-20 05:35:07,806 INFO decision = sell
 2020-09-24 22:35:08,374 INFO decision = buy
 2020-09-29 11:35:07,672 INFO decision = sell
+2020-10-01 04:35:08,192 INFO decision = buy
+2020-10-02 01:35:06,358 INFO decision = sell
+2020-10-04 10:35:07,115 INFO decision = buy
+2020-10-06 17:35:06,468 INFO decision = sell
+2020-10-08 20:35:06,701 INFO decision = buy
+2020-10-12 14:35:05,878 INFO decision = sell
+2020-10-12 16:35:06,905 INFO decision = buy
+2020-10-14 18:35:06,622 INFO decision = sell
+2020-10-18 10:35:16,304 INFO decision = buy

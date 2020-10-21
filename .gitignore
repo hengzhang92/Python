@@ -7,4 +7,8 @@ test/.idea
 *.log
 investment/bitcoin-historical-data.zip
 mykeys.py
+<<<<<<< HEAD
 passwords.py
+=======
+
+>>>>>>> a3d7b4692e07860a0a68e81e0f0473ec6a0381f7

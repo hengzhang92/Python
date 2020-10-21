@@ -1,3 +1,4 @@
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -25,7 +26,7 @@ monthtable = {'januari': 1,
               'november': 11,
               'december': 12}
 [62,150,237,324,411,498,585]
-px_sgm=[106,193.5,280,367,454.5,537]
+px_sgm=[138,288,438,588,738,888]
 
 def get_to_correcttable(definedtime):
     # find current table timespan
@@ -100,7 +101,6 @@ def get_exist_booking():
             time.sleep(5)
             date_object = datetime.strptime(date_string, "%d-%m-%Y %H:%M")
             booked_date.append(date_object)
-
     return booked_date
 
 def book_slot(available):
@@ -122,30 +122,25 @@ def book_slot(available):
 
 
 def book_date(definedtime):
-    booked_slots=get_exist_booking()
-    booked_dates =[]
+    booked_slots = get_exist_booking()
+    booked_dates = []
     [booked_dates.append(slot.date()) for slot in booked_slots]
-
     go_to_booking()
     get_to_correcttable(definedtime)
     availables = driver.find_elements_by_xpath(
         '//*[@class="fc-event fc-event-vert fc-event-start fc-event-end" and not(contains(., "[30/30]"))]')
     time.sleep(10)
-    if len(availables)>0:
-        availables_today=[]
+    if len(availables) > 0:
+        availables_today = []
         for available in availables:
             element_date = get_date_of_slot(available)
             if element_date.date() == definedtime:
                 availables_today.append(available)
-        availables_today.reverse()
-
-        if len(availables_today)>0:
+        if len(availables_today) > 0:
             available_today = availables_today[-1]
             element_date = get_date_of_slot(available_today)
-            if not(element_date.date() in booked_dates):
+            if not (element_date.date() in booked_dates):
                 book_slot(available_today)
-
-
 
 
 

@@ -1,4 +1,3 @@
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -101,6 +100,7 @@ def get_exist_booking():
             time.sleep(5)
             date_object = datetime.strptime(date_string, "%d-%m-%Y %H:%M")
             booked_date.append(date_object)
+    print(booked_date)
     return booked_date
 
 def book_slot(available):
@@ -122,27 +122,58 @@ def book_slot(available):
 
 
 def book_date(definedtime):
-    booked_slots = get_exist_booking()
-    booked_dates = []
+    booked_slots=get_exist_booking()
+    booked_dates =[]
     [booked_dates.append(slot.date()) for slot in booked_slots]
+
     go_to_booking()
     get_to_correcttable(definedtime)
     availables = driver.find_elements_by_xpath(
         '//*[@class="fc-event fc-event-vert fc-event-start fc-event-end" and not(contains(., "[30/30]"))]')
     time.sleep(10)
-    if len(availables) > 0:
-        availables_today = []
+    if len(availables)>0:
+        availables_today=[]
         for available in availables:
             element_date = get_date_of_slot(available)
             if element_date.date() == definedtime:
                 availables_today.append(available)
-        if len(availables_today) > 0:
+
+        if len(availables_today)>0:
+            available_today = availables_today[-1]
+    booked_slots=get_exist_booking()
+    booked_dates =[]
+    [booked_dates.append(slot.date()) for slot in booked_slots]
+
+    go_to_booking()
+    get_to_correcttable(definedtime)
+    availables = driver.find_elements_by_xpath(
+        '//*[@class="fc-event fc-event-vert fc-event-start fc-event-end" and not(contains(., "[30/30]"))]')
+    time.sleep(10)
+    if len(availables)>0:
+        availables_today=[]
+        for available in availables:
+            element_date = get_date_of_slot(available)
+            if element_date.date() == definedtime:
+                availables_today.append(available)
+
+        if len(availables_today)>0:
             available_today = availables_today[-1]
             element_date = get_date_of_slot(available_today)
-            if (not(element_date.date() in booked_dates)) and (element_date.hour>(datetime.today().hour+1)): 
+            if not(element_date.date() in booked_dates):
                 book_slot(available_today)
 
+    availables = driver.find_elements_by_xpath(
+        '//*[@class="fc-event fc-event-vert fc-event-start fc-event-end" and (contains(., "[30/30]"))]')
+    for available in availables:
+        element_date = get_date_of_slot(available)
+        print(element_date)	    element_date = get_date_of_slot(available_today)
+            if not(element_date.date() in booked_dates):
+                book_slot(available_today)
 
+    availables = driver.find_elements_by_xpath(
+        '//*[@class="fc-event fc-event-vert fc-event-start fc-event-end" and (contains(., "[30/30]"))]')
+    for available in availables:
+	element_d
 
 
 
@@ -157,7 +188,7 @@ def main():
         email.send_keys(passwords.email)
         password.send_keys(passwords.password)
         driver.find_element_by_id("submit").click()
-        time.sleep(20)
+        time.sleep(10)
         go_to_booking()
         time.sleep(10)
         #driver.find_element_by_xpath('//*[@class="fc-button fc-button-agendaDay fc-state-default fc-corner-right"]').click()

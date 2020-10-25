@@ -142,7 +142,7 @@ def book_date(definedtime):
         if len(availables_today) > 0:
             available_today = availables_today[-1]
             element_date = get_date_of_slot(available_today)
-            if (not(element_date.date() in booked_dates)) and (element_date-datetime.today()>timedelta(hours=1)) and (element_date.hour>20): 
+            if (not(element_date.date() in booked_dates)) and (element_date-datetime.today()>1) and (element_date.hour>10): 
                 book_slot(available_today)
 
 

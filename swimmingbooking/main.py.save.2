@@ -74,11 +74,8 @@ def get_date_of_slot(element):
     temp = temp.rsplit(' ')
     time.sleep(5)
     temp_starttime = element.text.split()[0].rsplit(':')
-    if not(temp[2]==temp[-2]) and (int(temp[0])<10):
-        tabletimespan_start = datetime(int(temp[-1]), monthtable[temp[-2]], int(temp[0]), int(temp_starttime[0]),int(temp_starttime[1]))
-    else:
-        tabletimespan_start = datetime(int(temp[-1]), monthtable[temp[1]], int(temp[0]),int(temp_starttime[0]),int(temp_starttime[1]))
 
+    tabletimespan_start = datetime(int(temp[-1]), monthtable[temp[-2]], int(temp[0]),int(temp_starttime[0]),int(temp_starttime[1]))
     element_date=tabletimespan_start+ timedelta(days=index)
     return element_date
 
@@ -142,7 +139,7 @@ def book_date(definedtime):
         if len(availables_today) > 0:
             available_today = availables_today[-1]
             element_date = get_date_of_slot(available_today)
-            if (not(element_date.date() in booked_dates)) and (element_date-datetime.today()>timedelta(hours=1)) and (element_date.hour>20): 
+            if (not(element_date.date() in booked_dates)) and (element_date-datetime.today()>1) and (element_date.hour>10): 
                 book_slot(available_today)
 
 
